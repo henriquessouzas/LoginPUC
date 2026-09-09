@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="card">
+            <div class="card-header">
+                <h1>Login</h1>
+            </div>
+            <form th:action="@{/login}" method="post" class="card-body">
+                <div class="input-group">
+                    <input type="text" id="username" name="username" placeholder="Usuário" required autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Senha" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-login">Entrar</button>
+                <div class="card-footer">
+                    <a th:href="@{/recoverpassword}">Esqueci minha senha</a>
+                    <span>·</span>
+                    <a th:href="@{/register}">Criar conta</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
