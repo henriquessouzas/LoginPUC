@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta</title>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="login-panel">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Criar Conta</h1>
+                </div>
+                <form th:action="@{/register}" method="post" class="card-body">
+                    <div class="input-group">
+                        <input type="text" name="nome" placeholder="Nome completo" required autocomplete="name">
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="email" placeholder="E-mail" required autocomplete="email">
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <input type="text" name="cpf" placeholder="CPF" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="rg" placeholder="RG" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="endereco" placeholder="Endereço" required autocomplete="street-address">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="instituicao" placeholder="Instituição" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" name="senha" placeholder="Senha" required autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn-login">Cadastrar</button>
+                    <div class="card-footer">
+                        <a th:href="@{/login}">Já tenho uma conta</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="image-panel"></div>
+    </div>
+</body>
+</html>
