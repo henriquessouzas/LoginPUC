@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <span class="navbar-brand">LoginPUC</span>
+        <div class="navbar-user">
+            <span>Olá, <strong th:text="${usuario}"></strong></span>
+            <a th:href="@{/logout}" class="btn-logout">Sair</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="welcome-card">
+            <div class="check-icon">✓</div>
+            <h1>Login realizado com sucesso!</h1>
+            <p>Bem-vindo ao sistema, <strong th:text="${usuario}"></strong>.</p>
+        </div>
+    </main>
+</body>
+</html>

@@ -12,23 +12,57 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.LoginPUC.exception.TokenInvalidoException;
+import com.example.LoginPUC.service.AuthService;
 import com.example.LoginPUC.service.SendEmailService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
 
     private final SendEmailService sendEmailService;
+    private final AuthService authService;
 
-    // token -> [email, expiracao]
     private final Map<String, Object[]> tokenStore = new ConcurrentHashMap<>();
 
-    public LoginController(SendEmailService sendEmailService) {
+    public LoginController(SendEmailService sendEmailService, AuthService authService) {
         this.sendEmailService = sendEmailService;
+        this.authService = authService;
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpSession session) {
+        if (authService.estaLogado(session))
+            return "redirect:/home";
         return "login";
+    }
+
+    @PostMapping("/login")
+    public String handleLogin(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password,
+            HttpSession session,
+            Model model) {
+
+        if (authService.autenticar(username, password, session))
+            return "redirect:/home";
+
+        model.addAttribute("erro", "Usuário ou senha inválidos.");
+        return "login";
+    }
+
+    @GetMapping("/home")
+    public String home(HttpSession session, Model model) {
+        if (!authService.estaLogado(session))
+            return "redirect:/login";
+        model.addAttribute("usuario", authService.getUsuario(session));
+        return "home";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        authService.logout(session);
+        return "redirect:/login";
     }
 
     @GetMapping("/register")
