@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir Senha</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="login-panel">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Nova Senha</h1>
+                    <p>Digite sua nova senha abaixo.</p>
+                </div>
+                <form th:action="@{/resetSenha}" method="post" class="card-body">
+                    <input type="hidden" name="token" th:value="${token}">
+                    <div class="input-group">
+                        <input type="password" name="senha" placeholder="Nova senha" required autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn-login">Redefinir Senha</button>
+                    <div class="card-footer">
+                        <a th:href="@{/login}">Voltar ao login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="image-panel"></div>
+    </div>
+</body>
+</html>

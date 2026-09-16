@@ -48,6 +48,12 @@ body, html {
     color: #e0e0e0;
 }
 
+.card-header p {
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: #6b7a99;
+}
+
 .card-body {
     padding: 0 2.5rem 2.5rem;
     display: flex;
@@ -110,4 +116,22 @@ body, html {
 
 .card-footer a:hover {
     text-decoration: underline;
+}
+
+.msg-sucesso {
+    padding: 0.75rem 1rem;
+    background: rgba(46, 160, 67, 0.15);
+    border: 1px solid #2ea043;
+    border-radius: 8px;
+    color: #2ea043;
+    font-size: 0.875rem;
+}
+
+.msg-erro {
+    padding: 0.75rem 1rem;
+    background: rgba(233, 69, 96, 0.15);
+    border: 1px solid #e94560;
+    border-radius: 8px;
+    color: #e94560;
+    font-size: 0.875rem;
 }

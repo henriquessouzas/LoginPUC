@@ -1,6 +1,12 @@
 package com.example.LoginPUC.controller;
 
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +17,9 @@ import com.example.LoginPUC.service.SendEmailService;
 public class LoginController {
 
     private final SendEmailService sendEmailService;
+
+    // token -> [email, expiracao]
+    private final Map<String, Object[]> tokenStore = new ConcurrentHashMap<>();
 
     public LoginController(SendEmailService sendEmailService) {
         this.sendEmailService = sendEmailService;
@@ -39,15 +48,52 @@ public class LoginController {
         return "redirect:/login";
     }
 
-    @GetMapping("/recoverpassword")
-    public String recoverpassword() {
-        return "recoverpassword";
+    @GetMapping("/esqueciSenha")
+    public String esqueciSenha() {
+        return "esqueciSenha";
     }
 
-    @PostMapping("/recoverpassword")
-    public String handleRecoverPassword(@RequestParam("email") String email) {
-        sendEmailService.sendEmail(email, "Recuperação de Senha",
-                "Aqui está o link para recuperar sua senha: [link de recuperação]");
+    @PostMapping("/esqueciSenha")
+    public String handleEsqueciSenha(@RequestParam("email") String email, Model model) {
+        String token = UUID.randomUUID().toString();
+        tokenStore.put(token, new Object[]{email, LocalDateTime.now().plusMinutes(30)});
+
+        try {
+            sendEmailService.sendRecoveryEmail(email, token);
+        } catch (Exception e) {
+            model.addAttribute("erro", "Não foi possível enviar o e-mail. Tente novamente.");
+            return "esqueciSenha";
+        }
+
+        model.addAttribute("sucesso", "E-mail enviado! Verifique sua caixa de entrada.");
+        return "esqueciSenha";
+    }
+
+    @GetMapping("/resetSenha")
+    public String resetSenha(@RequestParam("token") String token, Model model) {
+        Object[] data = tokenStore.get(token);
+        if (data == null || LocalDateTime.now().isAfter((LocalDateTime) data[1])) {
+            model.addAttribute("erro", "Link inválido ou expirado.");
+            return "esqueciSenha";
+        }
+        model.addAttribute("token", token);
+        return "resetSenha";
+    }
+
+    @PostMapping("/resetSenha")
+    public String handleResetSenha(
+            @RequestParam("token") String token,
+            @RequestParam("senha") String senha,
+            Model model) {
+
+        Object[] data = tokenStore.get(token);
+        if (data == null || LocalDateTime.now().isAfter((LocalDateTime) data[1])) {
+            model.addAttribute("erro", "Link inválido ou expirado.");
+            return "esqueciSenha";
+        }
+
+        // Aqui: atualizar a senha do usuário com o e-mail em data[0]
+        tokenStore.remove(token);
         return "redirect:/login";
     }
 }

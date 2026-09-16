@@ -26,4 +26,10 @@ public class SendEmailService {
             throw new RuntimeException("Falha ao enviar e-mail: " + e.getMessage());
         }
     }
+
+    public void sendRecoveryEmail(String to, String token) {
+        String link = "http://localhost:8080/resetSenha?token=" + token;
+        sendEmail(to, "Recuperação de Senha",
+                "Clique no link abaixo para redefinir sua senha:\n\n" + link + "\n\nO link expira em 30 minutos.");
+    }
 }
