@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.LoginPUC.exception.TokenInvalidoException;
 import com.example.LoginPUC.service.SendEmailService;
 
 @Controller
@@ -57,14 +58,7 @@ public class LoginController {
     public String handleEsqueciSenha(@RequestParam("email") String email, Model model) {
         String token = UUID.randomUUID().toString();
         tokenStore.put(token, new Object[]{email, LocalDateTime.now().plusMinutes(30)});
-
-        try {
-            sendEmailService.sendRecoveryEmail(email, token);
-        } catch (Exception e) {
-            model.addAttribute("erro", "Não foi possível enviar o e-mail. Tente novamente.");
-            return "esqueciSenha";
-        }
-
+        sendEmailService.sendRecoveryEmail(email, token);
         model.addAttribute("sucesso", "E-mail enviado! Verifique sua caixa de entrada.");
         return "esqueciSenha";
     }
@@ -72,10 +66,8 @@ public class LoginController {
     @GetMapping("/resetSenha")
     public String resetSenha(@RequestParam("token") String token, Model model) {
         Object[] data = tokenStore.get(token);
-        if (data == null || LocalDateTime.now().isAfter((LocalDateTime) data[1])) {
-            model.addAttribute("erro", "Link inválido ou expirado.");
-            return "esqueciSenha";
-        }
+        if (data == null || LocalDateTime.now().isAfter((LocalDateTime) data[1]))
+            throw new TokenInvalidoException("Link inválido ou expirado.");
         model.addAttribute("token", token);
         return "resetSenha";
     }
@@ -83,14 +75,11 @@ public class LoginController {
     @PostMapping("/resetSenha")
     public String handleResetSenha(
             @RequestParam("token") String token,
-            @RequestParam("senha") String senha,
-            Model model) {
+            @RequestParam("senha") String senha) {
 
         Object[] data = tokenStore.get(token);
-        if (data == null || LocalDateTime.now().isAfter((LocalDateTime) data[1])) {
-            model.addAttribute("erro", "Link inválido ou expirado.");
-            return "esqueciSenha";
-        }
+        if (data == null || LocalDateTime.now().isAfter((LocalDateTime) data[1]))
+            throw new TokenInvalidoException("Link inválido ou expirado.");
 
         // Aqui: atualizar a senha do usuário com o e-mail em data[0]
         tokenStore.remove(token);

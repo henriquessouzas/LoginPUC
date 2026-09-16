@@ -5,6 +5,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.example.LoginPUC.exception.SendEmailException;
+
 @Service
 public class SendEmailService {
 
@@ -23,7 +25,7 @@ public class SendEmailService {
             message.setFrom("noreply@loginpuc.com");
             mailSender.send(message);
         } catch (MailException e) {
-            throw new RuntimeException("Falha ao enviar e-mail: " + e.getMessage());
+            throw new SendEmailException("Falha ao enviar e-mail: " + e.getMessage());
         }
     }
 
